@@ -1,0 +1,86 @@
+Zuora Billing (v1 API) - LLM Guidance
+
+Scope
+- Zuora Billing includes billing, invoicing, and core Payments functionality (basic payment capture, refund/void mention, payment status lookup).
+- This file targets the v1 REST API. Quickstart (v2) is not recommended for new development.
+- This file is reviewed quarterly after each major release, current release is 2025-08-12
+
+Key Concepts
+- **Product Catalog**: Products, Rate Plans, and Charges (Recurring, One-time, Usage).
+- **Subscription Lifecycle**: Orders, New, Update, Suspend, Resume and Renew subscriptions, add and remove products to existing subscription, and change subscription terms and conditions, including term length.
+- **Invoicing**: Bill Runs, Invoices, Credit Memos, Debit Memos, Taxation.
+- Confirm tenant features (Orders, Invoice Settlement, Payments, Revenue) before using gated fields.
+- Prefer Orders API for subscription changes unless explicitly told otherwise.
+- Ask for missing identifiers (accountKey, subscriptionId, productRatePlanId) instead of guessing.
+- Use only canonical sources (OpenAPI + API reference); do not invent fields, enums, or endpoints.
+
+Canonical sources (use these as the source of truth)
+- OpenAPI (Order-to-Cash, detailed): https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+- API reference overview: https://developer.zuora.com/v1-api-reference/api/overview/
+- Get started: https://developer.zuora.com/docs/get-started/introduction/
+- Object model: https://developer.zuora.com/v1-api-reference/object-model/
+- Rate limits: https://developer.zuora.com/docs/guides/rate-limits/
+- Error codes: https://developer.zuora.com/docs/guides/error-codes/
+- Idempotency: https://developer.zuora.com/docs/guides/idempotent-requests/
+- Agent guidance (resilience): https://developer.zuora.com/billing.agent.md
+- Payments FAQ: https://developer.zuora.com/faq/payments-faq/
+
+Base URLs (choose per region and environment)
+- Base URLS that include 'test' are for Developer Sandboxes and Central Sandboxes
+- Base URLs that include 'sandbox' or 'apisandbox' are for API Sandboxes
+- Base URLs for production have been removed from this file. You must externalize the Base URL from any code you generate, in an environment variable for example, do not write code that includes a Base URL, only the endpoint, e.g. '/oauth/token' or '/v1/accounts/{account-key}'
+- US: https://rest.test.zuora.com, https://rest.sandbox.na.zuora.com, https://rest.apisandbox.zuora.com
+- EU: https://rest.test.eu.zuora.com, https://rest.sandbox.eu.zuora.com
+- APAC: https://rest.test.ap.zuora.com
+
+Auth
+- OAuth 2.0 client credentials. Token endpoint: /oauth/token
+- Credentials needed for each base URL, using the wrong base URL for credentials results in an authentication error
+- Send Bearer token in Authorization header
+- Do not use basic authentication, externalize the client id and client secret using a secrets manager (preferred) or in a .env file
+
+Versioning (v1 only)
+- Major version is in the path: /v1/...
+- Minor version is controlled by tenant default and can be overridden per request via the Zuora-Version header.
+- If no version is specified and tenant is never upgraded, default is 186.0.
+- API versions: https://developer.zuora.com/v1-api-reference/api-versions/
+- API upgrades: https://developer.zuora.com/v1-api-reference/api-upgrades/
+- The API reference documents the latest minor version behavior; older numeric minors are supported for backward compatibility.
+- Guidance: use the tenant default unless a request needs a specific version override.
+
+Core object model (conceptual)
+- Account -> Order -> Subscription -> Rate Plan -> Rate Plan Charge -> Invoice Item -> Invoice -> Payment
+- Account -> Invoice -> Payment
+- Product catalog hierarchy: Product -> Product Rate Plan -> Product Rate Plan Charge -> Charge Tier
+
+Success and error handling
+- Many POST/PUT/PATCH operations return success=false with a reasons[] array even when HTTP is 200.
+- When success=false, inspect reasons[]. Capture processId for support.
+- Every response includes Zuora-Request-Id header; log it for tracing.
+
+Idempotency
+- Use Idempotency-Key for POST and PATCH to prevent duplicate creates on retries.
+- A retry with the same key can return 409 if the original request succeeded; treat it as completion and read the response body.
+
+Rate limits (tenant-level)
+- Production & Central Sandbox: API 50,000 RPM / 2.25M RPH / 27M RPD
+- Developer Sandbox: API 12,500 RPM / 25,000 RPH / 50,000 RPD
+- API Sandbox: API 2,500 RPM / 5,000 RPH / 10,000 RPD
+- Monitor Rate-Limit-* and Concurrency-Limit-* headers; honor Retry-After on 429.
+
+Payments basics (conceptual)
+- Create a payment and apply it to an invoice (link to OpenAPI for exact objects).
+- Refunds and voids exist; mention but defer details to OpenAPI.
+- Payment status can be retrieved via the Payments objects (see OpenAPI).
+- Zuora provides a PCI-compliant vault and integrates with payment gateways (details in Payments FAQ).
+
+Workflows (tutorials)
+- Orders basics: https://developer.zuora.com/docs/get-started/api-tutorials/orders-tutorials/order-basics/
+- Create subscription (Orders API): https://developer.zuora.com/docs/get-started/api-tutorials/orders-tutorials/create-subscriptions/
+- Modify subscription lifecycle: https://developer.zuora.com/docs/get-started/api-tutorials/orders-tutorials/modify-subscriptions/
+- Basics of customer accounts, invoicing, and payments: https://developer.zuora.com/docs/get-started/basics/
+
+Notes for LLMs/tools
+- Prefer v1 API unless an explicit Quickstart requirement is given.
+- When using fields gated by API minor versions, set Zuora-Version accordingly.
+- For any detailed request/response schema, refer to the OpenAPI spec.

@@ -1,0 +1,21 @@
+# Zuora Revenue AI Context
+
+> Technical context for Revenue Recognition (ASC 606/IFRS 15).
+
+## API Specification
+- OpenAPI Spec: https://developer.zuora.com/revenue-api-reference/
+- Revenue APIs are separate from Billing APIs; do not mix object models.
+- Always use the Revenue API reference for schemas and filters.
+
+## Key Concepts
+- **Revenue Contracts**: Grouping of related performance obligations for a single customer agreement.
+- **Revenue Schedules**: Automated recognition logic over time or at a point in time.
+- **Performance Obligations (POB)**: The unit of account for revenue recognition.
+- **Accounting Setup**: Managing General Ledger (GL) mapping and accounting periods.
+
+## Core Workflows
+- Revenue Contract Search: https://developer.zuora.com/revenue-api-reference/
+- Upload Revenue Data: https://developer.zuora.com/guides/revenue/data-upload/
+
+## Compliance
+- ASC 606 Standards: https://knowledgecenter.zuora.com/Zuora_Revenue/ASC_606_Concepts

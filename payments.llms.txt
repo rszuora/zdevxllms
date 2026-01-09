@@ -1,0 +1,31 @@
+Zuora Payments (Placeholder)
+
+Scope
+- This file will cover in-depth Payments guidance beyond Billing basics.
+- Current Billing guidance includes only: create payment + apply to invoice, refund/void mention, and payment status lookup.
+- This file is reviewed quarterly after each major release, current release is 2025-08-12
+
+Canonical sources (to be expanded)
+- Payments FAQ: https://developer.zuora.com/docs/get-started/faq/zuora-payments/
+- OpenAPI (Order-to-Cash): https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+
+Key Concepts
+- **Electronic Payment Collections**: Automating payment runs against invoices.
+- **PCI-Compliant Storage**: Securely vaulting credit card and bank account data.
+- **Hosted Payment Pages (HPP) and Payment Forms**: IFrame-based card capture to minimize PCI scope.
+- **Payment Gateways**: Native integration with 50+ global gateways (Stripe, Adyen, Chase, etc.).
+
+Core Workflows
+- Create Payment Method (HPP): https://developer.zuora.com/guides/payments/hpp-setup/
+- Process a Payment: https://developer.zuora.com/guides/payments/process-payment/
+- Handle Refunds: https://developer.zuora.com/guides/payments/refunds/
+
+## Security
+- PCI Compliance: https://knowledgecenter.zuora.com/Zuora_Payments/PCI_Compliance
+
+Planned topics
+- Payment method capture options and vaulting
+- Gateway setup and configuration
+- Hosted payments pages and tokenization flows
+- Failure handling, retries, and reconciliation
+- Regional compliance (PCI, SCA/3DS)

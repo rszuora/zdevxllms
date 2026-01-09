@@ -1,0 +1,36 @@
+# Zuora AI Developer Hub
+
+> The primary entry point for developers building with the Zuora Monetization Suite.
+
+Usage
+- This file is an index. For implementation details, open the specific spoke file.
+
+Metadata
+- Last reviewed: 2026-01-12
+- Owner: Zuora Developer Relations
+
+
+## Products (Spokes)
+
+- **Zuora Billing**: Subscription management and invoicing engine.
+  - Link: /billing.llms.txt
+  - Description: Manage accounts, subscription lifecycle, usage rating, and automated billing generating invoices, credit memos and debit memos.
+  - Orders and Invoice Settlement features are assumed enabled
+
+- **Zuora Payments**: Global payment collections and gateway integration.
+  - Link: /payments.llms.txt
+  - Description: Handle electronic payment collections, PCI-compliant payment methods, gateway integrations, and refunds.
+  - Core Zuora Billing Payments functionality only, Collections will have it's own llms.txt but that's not available now.
+
+- **Zuora Revenue**: Revenue recognition automation.
+  - Link: /revenue.llms.txt
+  - Description: Automate revenue recognition schedules, accounting codes, and compliance (ASC 606/IFRS 15).
+
+- **Zephr**: Digital identity and experience orchestration. (Future)
+  - Description: Manage user identity, paywalls, and digital experiences.
+
+
+## General Resources
+- Developer Portal: https://developer.zuora.com
+- Knowledge Center: https://docs.zuora.com
+- Community: https://community.zuora.com
