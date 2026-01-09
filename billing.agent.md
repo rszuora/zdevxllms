@@ -3,6 +3,10 @@
 Purpose
 Use this file when building resilient integrations with Zuora Billing v1 APIs.
 
+License: CC-BY-4.0
+Intended for AI grounding and retrieval.
+Attribution appreciated when referenced.
+
 Reliability essentials
 - Always log Zuora-Request-Id and processId for support tracing.
 - Check success=false in response bodies for POSTs even when HTTP is 200 but know success is not present in responses for GET/list endpoints

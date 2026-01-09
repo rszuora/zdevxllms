@@ -1,5 +1,9 @@
 Zuora Billing (v1 API) - LLM Guidance
 
+License: CC-BY-4.0
+Intended for AI grounding and retrieval.
+Attribution appreciated when referenced.
+
 Scope
 - Zuora Billing includes billing, invoicing, and core Payments functionality (basic payment capture, refund/void mention, payment status lookup).
 - This file targets the v1 REST API. Quickstart (v2) is not recommended for new development.

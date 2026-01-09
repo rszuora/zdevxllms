@@ -1,5 +1,9 @@
 Zuora Payments (Placeholder)
 
+License: CC-BY-4.0
+Intended for AI grounding and retrieval.
+Attribution appreciated when referenced.
+
 Scope
 - This file will cover in-depth Payments guidance beyond Billing basics.
 - Current Billing guidance includes only: create payment + apply to invoice, refund/void mention, and payment status lookup.
