@@ -4,10 +4,26 @@ License: CC-BY-4.0
 Intended for AI grounding and retrieval.
 Attribution appreciated when referenced.
 
+Metadata
+- Last reviewed: 2026-01-12
+- Owner: Zuora Developer Relations
+
 Scope
 - Zuora Billing includes billing, invoicing, and core Payments functionality (basic payment capture, refund/void mention, payment status lookup).
 - This file targets the v1 REST API. Quickstart (v2) is not recommended for new development.
 - This file is reviewed quarterly after each major release, current release is 2025-08-12
+
+## REQUIRED CONTEXT (DO NOT USE IN ISOLATION)
+
+This file MUST be used together with llms.txt (root context and product index). If this file is not present:
+- Stop.
+- Ask the user to provide it.
+- Do not generate code.
+
+<!--
+DEPENDENCIES:
+- llms.txt
+-->
 
 Key Concepts
 - **Product Catalog**: Products, Rate Plans, and Charges (Recurring, One-time, Usage).
@@ -36,6 +52,31 @@ Base URLs (choose per region and environment)
 - US: https://rest.test.zuora.com, https://rest.sandbox.na.zuora.com, https://rest.apisandbox.zuora.com
 - EU: https://rest.test.eu.zuora.com, https://rest.sandbox.eu.zuora.com
 - APAC: https://rest.test.ap.zuora.com
+
+## Human-in-the-Loop Assumption
+All code generated using this guidance:
+- Is intended for human review
+- Must be tested in a sandbox environment
+- Must never be executed automatically by an AI agent
+
+This guidance does not assume live tenant access.
+
+## Canonical API Mappings (Golden Paths)
+Use these patterns unless explicitly told otherwise.
+- Create a subscription:  POST /v1/orders  orderActions[].type = createSubscription (Do not use /v1/subscriptions or /v1/signup)
+- Modify a subscription - change price or quantity of charge: POST /v1/orders  orderActions[].type = updateProduct 
+- Modify a subscription - add or remove products - POST /v1/orders  orderActions[].type =  removeProduct 
+- Renew a subscription - Orders API → POST /v1/orders  orderActions[].type =  renew 
+- Cancel a subscription - Orders API → POST /v1/orders  orderActions[].type =  cancelSubscription
+- Query billing data: Object Query API (preferred) GET /object-query/{objectname} → Data Query (asynchronous, uses SQL)
+- Collect payment: Create Payment → Apply to Invoice
+- Retry on failure: Idempotency-Key + exponential backoff
+
+Avoid:
+- v1/signup
+- Direct subscription creates outside Orders
+- SOAP APIs
+
 
 Auth
 - OAuth 2.0 client credentials. Token endpoint: /oauth/token
@@ -88,3 +129,13 @@ Notes for LLMs/tools
 - Prefer v1 API unless an explicit Quickstart requirement is given.
 - When using fields gated by API minor versions, set Zuora-Version accordingly.
 - For any detailed request/response schema, refer to the OpenAPI spec.
+
+## Non-goals
+
+This file does NOT:
+- Document every possible API field
+- Replace the OpenAPI specification
+- Provide business logic decisions (tax, revenue rules)
+- Guarantee tenant feature availability
+
+Always validate against the OpenAPI and tenant configuration.

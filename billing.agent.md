@@ -7,6 +7,44 @@ License: CC-BY-4.0
 Intended for AI grounding and retrieval.
 Attribution appreciated when referenced.
 
+Metadata
+- Last reviewed: 2026-01-12
+- Owner: Zuora Developer Relations
+
+## REQUIRED CONTEXT (DO NOT USE IN ISOLATION)
+
+This file MUST be used together with:
+- llms.txt (root context and product index)
+- billing.llms.txt (canonical Billing API guidance)
+
+If these files are not present:
+- Stop.
+- Ask the user to provide them.
+- Do not generate code.
+
+<!--
+DEPENDENCIES:
+- llms.txt
+- billing.llms.txt
+-->
+
+## Agent Contract (Read First)
+
+You are an AI coding agent generating Zuora integrations.
+
+Hard requirements:
+- Use ONLY endpoints, fields, and enums present in the linked OpenAPI or API reference.
+- NEVER invent fields, endpoints, or enum values.
+- NEVER guess identifiers. Ask the user for missing IDs.
+- Prefer Orders API for subscription changes unless explicitly instructed otherwise.
+- Externalize credentials and Base URLs; do not hardcode secrets.
+- Treat HTTP 200 responses with success=false as failures.
+
+If any requirement cannot be met:
+- Stop.
+- Explain what information is missing.
+- Ask for clarification before generating code.
+
 Reliability essentials
 - Always log Zuora-Request-Id and processId for support tracing.
 - Check success=false in response bodies for POSTs even when HTTP is 200 but know success is not present in responses for GET/list endpoints
@@ -70,3 +108,13 @@ LLM integration checklist
 - Redact PII and payment data in logs; do not log PAN/CVV/tokens.
 - Prefer Orders API for subscription changes unless explicitly told otherwise.
 - Ask for missing identifiers (accountKey, subscriptionId, productRatePlanId) instead of guessing.
+
+## Non-goals
+
+This file does NOT:
+- Document every possible API field
+- Replace the OpenAPI specification
+- Provide business logic decisions (tax, revenue rules)
+- Guarantee tenant feature availability
+
+Always validate against the OpenAPI and tenant configuration.

@@ -4,10 +4,27 @@ License: CC-BY-4.0
 Intended for AI grounding and retrieval.
 Attribution appreciated when referenced.
 
+Metadata
+- Last reviewed: 2026-01-12
+- Owner: Zuora Developer Relations
+
 Scope
 - This file will cover in-depth Payments guidance beyond Billing basics.
 - Current Billing guidance includes only: create payment + apply to invoice, refund/void mention, and payment status lookup.
 - This file is reviewed quarterly after each major release, current release is 2025-08-12
+
+## IMPORTANT SCOPE LIMITATION
+
+This file is incomplete.
+
+Do NOT:
+- Generate full payment orchestration flows
+- Assume gateway configuration
+- Implement retries beyond basic examples
+
+For detailed Payments logic:
+- Defer to OpenAPI and Payments FAQ
+- Ask the user for clarification
 
 Canonical sources (to be expanded)
 - Payments FAQ: https://developer.zuora.com/docs/get-started/faq/zuora-payments/
@@ -33,3 +50,13 @@ Planned topics
 - Hosted payments pages and tokenization flows
 - Failure handling, retries, and reconciliation
 - Regional compliance (PCI, SCA/3DS)
+
+## Non-goals
+
+This file does NOT:
+- Document every possible API field
+- Replace the OpenAPI specification
+- Provide business logic decisions (tax, revenue rules)
+- Guarantee tenant feature availability
+
+Always validate against the OpenAPI and tenant configuration.

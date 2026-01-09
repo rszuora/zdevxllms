@@ -38,3 +38,21 @@ Metadata
 - Developer Portal: https://developer.zuora.com
 - Knowledge Center: https://docs.zuora.com
 - Community: https://community.zuora.com
+
+## Non-goals
+This file does NOT:
+- Document every possible API field
+- Replace the OpenAPI specification
+- Provide business logic decisions (tax, revenue rules)
+- Guarantee tenant feature availability
+
+Always validate against the OpenAPI and tenant configuration.
+
+## Human-in-the-Loop Assumption
+
+All code generated using this guidance:
+- Is intended for human review
+- Must be tested in a sandbox environment
+- Must never be executed automatically by an AI agent
+
+This guidance does not assume live tenant access.
