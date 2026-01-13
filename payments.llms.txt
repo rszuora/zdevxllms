@@ -1,6 +1,7 @@
 Zuora Payments (Placeholder)
 
-License: CC-BY-4.0
+# Copyright © 2026 Zuora, Inc.
+# Use subject to the terms at https://www.zuora.com/about/legal/
 Intended for AI grounding and retrieval.
 Attribution appreciated when referenced.
 

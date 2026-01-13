@@ -1,6 +1,7 @@
 Zuora Billing (v1 API) - LLM Guidance
 
-License: CC-BY-4.0
+# Copyright © 2026 Zuora, Inc.
+# Use subject to the terms at https://www.zuora.com/about/legal/
 Intended for AI grounding and retrieval.
 Attribution appreciated when referenced.
 
@@ -33,6 +34,7 @@ Key Concepts
 - Prefer Orders API for subscription changes unless explicitly told otherwise.
 - Ask for missing identifiers (accountKey, subscriptionId, productRatePlanId) instead of guessing.
 - Use only canonical sources (OpenAPI + API reference); do not invent fields, enums, or endpoints.
+- **MANDATORY**: Fetch and review the OpenAPI spec BEFORE writing code for any API endpoint.
 
 Canonical sources (use these as the source of truth)
 - OpenAPI (Order-to-Cash, detailed): https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
@@ -44,6 +46,26 @@ Canonical sources (use these as the source of truth)
 - Idempotency: https://developer.zuora.com/docs/guides/idempotent-requests/
 - Agent guidance (resilience): https://developer.zuora.com/billing.agent.md
 - Payments FAQ: https://developer.zuora.com/faq/payments-faq/
+
+## MANDATORY: Use OpenAPI Spec First
+
+**CRITICAL**: Before writing any code that calls a Zuora API endpoint:
+1. Fetch and review the OpenAPI specification: https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+2. Locate the exact endpoint definition
+3. Verify all field names, types, required fields, and request/response structures
+4. Do NOT guess field names, case sensitivity, or payload structures
+
+**When to use OpenAPI spec:**
+- Before writing any API call code
+- When determining required vs optional fields
+- When verifying field names and case sensitivity
+- When building request payloads
+- When understanding response structures
+
+**Do NOT:**
+- Assume field names or structures
+- Use trial-and-error to find correct formats
+- Ask users to confirm details available in the spec
 
 Base URLs (choose per region and environment)
 - Base URLS that include 'test' are for Developer Sandboxes and Central Sandboxes
@@ -58,8 +80,14 @@ All code generated using this guidance:
 - Is intended for human review
 - Must be tested in a sandbox environment
 - Must never be executed automatically by an AI agent
+- This guidance does not assume live tenant access.
 
-This guidance does not assume live tenant access.
+Product catalog model:
+- Zuora uses a three-tier catalog: Product → Product Rate Plan → Product Rate Plan Charge.
+- When a product is added to a subscription, Zuora copies the Product Rate Plan and Charges into the subscription using the Product Rate Plan Id and optionally the Product Rate Plan Charge Id if the quantity or price is being modified upon addition to the subscription.
+- Subscriptions contain copies, known as Rate Plans and Rate Plan Charges with new Rate Plan and Rate Plan Charge IDs.
+- Subscription updates MUST use subscription-level Rate Plan Id and Rate Plan Charge Ids, not catalog IDs.
+
 
 ## Canonical API Mappings (Golden Paths)
 Use these patterns unless explicitly told otherwise.
@@ -68,9 +96,10 @@ Use these patterns unless explicitly told otherwise.
 - Modify a subscription - add or remove products - POST /v1/orders  orderActions[].type =  removeProduct 
 - Renew a subscription - Orders API → POST /v1/orders  orderActions[].type =  renew 
 - Cancel a subscription - Orders API → POST /v1/orders  orderActions[].type =  cancelSubscription
-- Query billing data: Object Query API (preferred) GET /object-query/{objectname} → Data Query (asynchronous, uses SQL)
+- Use Object Query for synchronous, interactive, or request/response code paths. GET /object-query/{objectname} Object Query supports filtering, field selection, sorting, and expansion. 
+- Use AQUA only for bulk extraction (tens of thousands of records) or offline data warehouse pipelines. If latency, determinism, or inline validation matters, Object Query is required.
 - Collect payment: Create Payment → Apply to Invoice
-- Retry on failure: Idempotency-Key + exponential backoff
+- Failure handling, retries, and resilience behavior: see billing.agent.md
 
 Avoid:
 - v1/signup
@@ -101,11 +130,6 @@ Core object model (conceptual)
 Success and error handling
 - Many POST/PUT/PATCH operations return success=false with a reasons[] array even when HTTP is 200.
 - When success=false, inspect reasons[]. Capture processId for support.
-- Every response includes Zuora-Request-Id header; log it for tracing.
-
-Idempotency
-- Use Idempotency-Key for POST and PATCH to prevent duplicate creates on retries.
-- A retry with the same key can return 409 if the original request succeeded; treat it as completion and read the response body.
 
 Rate limits (tenant-level)
 - Production & Central Sandbox: API 50,000 RPM / 2.25M RPH / 27M RPD
