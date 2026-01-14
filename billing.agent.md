@@ -34,7 +34,7 @@ DEPENDENCIES:
 You are an AI coding agent generating Zuora integrations.
 
 Hard requirements:
-- **MANDATORY FIRST STEP**: Before writing code for any API endpoint, fetch and review the OpenAPI specification at https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+- **MANDATORY FIRST STEP**: Before writing code for any API endpoint, use curl to fetch and review the OpenAPI specification at https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
 - Use ONLY endpoints, fields, and enums present in the OpenAPI spec
 - NEVER invent fields, endpoints, or enum values
 - NEVER guess identifiers. Ask the user for missing IDs.
@@ -51,7 +51,7 @@ If any requirement cannot be met:
 
 When building code that calls Zuora APIs, follow this workflow:
 
-1. **Fetch OpenAPI Spec First**: Retrieve https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+1. **Fetch OpenAPI Spec First**: Review https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml after downloading with curl
 2. **Locate Endpoint**: Find the exact endpoint definition in the spec
 3. **Verify Structure**: Check required fields, field names, case sensitivity, and data types
 4. **Write Code**: Only then write code using verified information
@@ -68,6 +68,8 @@ Reliability essentials
 - Check success=false in response bodies for POSTs even when HTTP is 200 but know success is not present in responses for GET/list endpoints
 - Use Idempotency-Key for POST and PATCH requests.
 - Respect Retry-After on 429 and 503.
+- Handle success=false in 200 responses; surface reasons[] and processId.
+- Ask for missing identifiers (accountKey, subscriptionId, productRatePlanId) instead of guessing.
 
 Correlation and tracing
 - Include a client correlation ID (X-Correlation-ID) on all requests.
@@ -106,22 +108,13 @@ Structured logging fields
 - attempt, status_code, latency_ms
 
 Rate and concurrency limits
-- Read Rate-Limit-* and Concurrency-Limit-* headers.
+- Read and Respect Rate-Limit-* and Retry-After headers; apply exponential backoff with jitter.
 - Alert when headroom is low.
-- Throttle upstream to avoid bursting after backoff.
 
 Product catalog rules (hard requirements):
 - You MUST NOT reference Product, Product Rate Plan, or Product Rate Plan Charge IDs when updating an existing subscription.
 - After a product is added, all modifications MUST target subscription-level Rate Plan Ids and Rate Plan Charge Ids. If a user only provides a product name you must ask what product rate plan charge they wish to add and then look up the product rate plan id using object-query. If the user wants to update the quantity or price of any charge you must look up the rate plan charge id and specify that along with the new price or quantity.
 - For subscription changes post creation, if the user provides only Rate Plan or Rate Plan Charge names or numbers, you must query for the necessary Ids.
-
-LLM integration checklist
-- Use only canonical sources (OpenAPI + API reference); do not invent fields, enums, or endpoints.
-- Use Idempotency-Key on POST/PATCH and treat 409 as possible success.
-- Handle success=false in 200 responses; surface reasons[] and processId.
-- Respect Rate-Limit-* and Retry-After headers; apply exponential backoff with jitter.
-- Redact PII and payment data in logs; do not log PAN/CVV/tokens.
-- Ask for missing identifiers (accountKey, subscriptionId, productRatePlanId) instead of guessing.
 
 Query selection rules (hard requirements):
 - Default to Object Query for all synchronous or interactive data access.
@@ -129,12 +122,9 @@ Query selection rules (hard requirements):
 - You MUST NOT generate Object Query code for bulk extraction workloads.
 - You MUST NOT recommend AQUA or SQL or Data Query for interactive or request/response workflows unless explicitly instructed.
 
-
 ## Non-goals
 This file does NOT:
 - Document every possible API field
 - Replace the OpenAPI specification
 - Provide business logic decisions (tax, revenue rules)
 - Guarantee tenant feature availability
-
-Always validate against the OpenAPI and tenant configuration.

@@ -36,7 +36,7 @@ Key Concepts
 - Use only canonical sources (OpenAPI + API reference); do not invent fields, enums, or endpoints.
 - **MANDATORY**: Fetch and review the OpenAPI spec BEFORE writing code for any API endpoint.
 
-Canonical sources (use these as the source of truth)
+Canonical sources (use these as the source of truth, use curl to download if needed)
 - OpenAPI (Order-to-Cash, detailed): https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
 - API reference overview: https://developer.zuora.com/v1-api-reference/api/overview/
 - Get started: https://developer.zuora.com/docs/get-started/introduction/
@@ -47,10 +47,8 @@ Canonical sources (use these as the source of truth)
 - Agent guidance (resilience): https://developer.zuora.com/billing.agent.md
 - Payments FAQ: https://developer.zuora.com/faq/payments-faq/
 
-## MANDATORY: Use OpenAPI Spec First
-
 **CRITICAL**: Before writing any code that calls a Zuora API endpoint:
-1. Fetch and review the OpenAPI specification: https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
+1. Fetch using curl and review the OpenAPI specification: https://developer.zuora.com/yaml/zuora-openapi-for-otc.yaml
 2. Locate the exact endpoint definition
 3. Verify all field names, types, required fields, and request/response structures
 4. Do NOT guess field names, case sensitivity, or payload structures
